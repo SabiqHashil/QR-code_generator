@@ -129,10 +129,10 @@ export default function QRGenerator() {
   return (
     <section
       id="generator"
-      className="mx-auto w-full max-w-5xl px-4 pb-12 sm:px-6"
+      className="mx-auto w-full max-w-5xl px-4 pb-14 sm:px-6"
       aria-labelledby="generator-heading"
     >
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <h2 id="generator-heading" className="sr-only">
           QR Generator Workspace
         </h2>
@@ -140,7 +140,7 @@ export default function QRGenerator() {
           <span aria-hidden="true">🔒</span>
           Generated locally in your browser
         </p>
-        <p className="max-w-md text-sm text-ink-muted sm:text-right">
+        <p className="w-full max-w-md text-sm leading-relaxed text-ink-muted sm:text-right">
           Your QR code is generated directly in your browser. We don&apos;t
           upload or store your data.
         </p>
@@ -148,16 +148,16 @@ export default function QRGenerator() {
 
       <div className="overflow-hidden rounded-2xl border border-line bg-panel shadow-sm shadow-slate-900/5">
         <div className="grid lg:grid-cols-2">
-          <div className="min-w-0 border-b border-line p-5 sm:p-6 lg:border-b-0 lg:border-r">
-            <h3 className="mb-5 text-sm font-semibold uppercase tracking-wide text-ink-muted">
+          <div className="min-w-0 border-b border-line p-6 lg:border-b-0 lg:border-r">
+            <h3 className="mb-6 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
               Configuration
             </h3>
 
-            <form onSubmit={handleGenerate} className="space-y-5" noValidate>
+            <form onSubmit={handleGenerate} className="space-y-6" noValidate>
               <QRTypeSelector value={qrType} onChange={handleTypeChange} />
 
               <div>
-                <p className="mb-3 text-sm font-medium text-ink">Input</p>
+                <p className="mb-3 text-sm font-semibold text-ink">Input</p>
                 <QRFormFields
                   type={qrType}
                   values={formData}
@@ -166,8 +166,8 @@ export default function QRGenerator() {
                 />
               </div>
 
-              <div className="space-y-4 rounded-xl border border-line bg-surface/60 p-4">
-                <p className="text-sm font-medium text-ink">QR options</p>
+              <div className="space-y-4 rounded-xl border border-line bg-surface/50 p-4 sm:p-5">
+                <p className="text-sm font-semibold text-ink">QR options</p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <label htmlFor="qr-size" className="block text-sm font-medium text-ink">
@@ -213,7 +213,7 @@ export default function QRGenerator() {
 
               {formAlert && (
                 <p
-                  className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                  className="rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
                   role="alert"
                   aria-live="polite"
                 >
@@ -224,14 +224,14 @@ export default function QRGenerator() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button
                   type="submit"
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[10rem]"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[11rem]"
                 >
                   Generate QR
                 </button>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-3 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[8rem]"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-line bg-transparent px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[8rem]"
                 >
                   Reset
                 </button>
@@ -239,7 +239,7 @@ export default function QRGenerator() {
             </form>
           </div>
 
-          <div className="min-w-0 bg-surface/40 p-5 sm:p-6">
+          <div className="min-w-0 bg-surface/50 p-6">
             <QRPreview
               payload={payload}
               summary={summary}

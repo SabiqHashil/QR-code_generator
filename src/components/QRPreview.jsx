@@ -104,46 +104,62 @@ export default function QRPreview({
     handleDownload(format)
   }
 
-  const showEmpty = !payload && !error
+  const showEmpty = !payload && !error && !isRendering
   const showQr = Boolean(payload) && hasImage && !error
   const downloadDisabled = isRendering || !showQr
 
   return (
-    <div className="flex h-full min-h-[240px] flex-col">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-muted">
+    <div className="flex h-full min-h-[260px] flex-col">
+      <h2 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
         Preview
       </h2>
 
-      <div className="flex flex-1 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-line bg-surface/80 px-4 py-8 text-center sm:px-6">
-        <div className="w-full max-w-full overflow-hidden">
-          <canvas
-            ref={canvasRef}
-            className={`mx-auto h-auto max-w-full rounded-lg bg-white shadow-sm ${
-              showQr ? 'block' : 'hidden'
+      <div className="flex flex-1 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-line bg-accent-soft/40 px-4 py-8 text-center sm:px-6">
+        <div
+          className={`w-full max-w-full overflow-hidden transition-opacity duration-300 ${
+            showQr ? 'block opacity-100' : 'hidden opacity-0'
+          }`}
+        >
+          <div
+            className={`mx-auto inline-block max-w-full rounded-xl border border-line bg-white p-3 shadow-sm ${
+              isRendering ? 'animate-pulse' : ''
             }`}
-            aria-label={
-              summary
-                ? `QR code for ${summary.typeLabel}`
-                : 'Generated QR code'
-            }
-          />
+          >
+            <canvas
+              ref={canvasRef}
+              className="mx-auto block h-auto max-w-full"
+              aria-label={
+                summary
+                  ? `QR code for ${summary.typeLabel}`
+                  : 'Generated QR code'
+              }
+            />
+          </div>
         </div>
-        {isRendering && (
-          <p className="text-sm text-ink-muted" role="status">
-            Generating QR code…
-          </p>
+
+        {isRendering && !showQr && (
+          <div className="flex flex-col items-center gap-3" role="status">
+            <div
+              className="h-28 w-28 animate-pulse rounded-xl border border-line bg-panel/80"
+              aria-hidden="true"
+            />
+            <p className="text-sm text-ink-muted">Generating QR code…</p>
+          </div>
         )}
 
         {error && (
-          <p className="max-w-[18rem] text-sm text-red-600" role="alert">
+          <p
+            className="max-w-[18rem] rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+            role="alert"
+          >
             {error}
           </p>
         )}
 
         {showEmpty && (
-          <>
+          <div className="flex flex-col items-center transition-opacity duration-300">
             <div
-              className="mb-4 grid h-28 w-28 grid-cols-4 gap-1 opacity-30"
+              className="mb-4 grid h-28 w-28 grid-cols-4 gap-1.5 rounded-xl border border-line/80 bg-panel/70 p-3 opacity-50"
               aria-hidden="true"
             >
               {Array.from({ length: 16 }).map((_, i) => (
@@ -151,33 +167,34 @@ export default function QRPreview({
                   key={i}
                   className={`rounded-sm bg-ink ${
                     [0, 1, 2, 4, 8, 10, 12, 13, 14].includes(i)
-                      ? 'opacity-100'
+                      ? 'opacity-80'
                       : 'opacity-20'
                   }`}
                 />
               ))}
             </div>
-            <p className="text-sm font-medium text-ink">QR Preview</p>
-            <p className="mt-1 max-w-[16rem] text-xs text-ink-muted">
-              Fill in the form and press Generate QR to create a local QR code.
+            <p className="text-sm font-semibold text-ink">Your QR will appear here</p>
+            <p className="mt-1.5 max-w-[17rem] text-xs leading-relaxed text-ink-muted">
+              Fill in the form and press Generate QR. Everything stays in your
+              browser.
             </p>
-          </>
+          </div>
         )}
 
         {showQr && summary && (
-          <div className="mt-5 w-full max-w-sm space-y-4">
-            <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-accent">
+          <div className="mt-6 w-full max-w-sm space-y-5 transition-opacity duration-300">
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent">
                 {summary.typeLabel}
               </p>
               {summary.detail ? (
-                <p className="break-words text-sm text-ink-muted">
+                <p className="break-words text-sm leading-relaxed text-ink-muted">
                   {summary.detail}
                 </p>
               ) : null}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <DownloadMenu
                 disabled={downloadDisabled}
                 onSelect={handleDownloadSelect}
@@ -186,7 +203,7 @@ export default function QRPreview({
                 <button
                   type="button"
                   onClick={onGenerateNew}
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-line bg-transparent px-4 py-2.5 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:bg-panel hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   Generate New QR
                 </button>

@@ -15,11 +15,11 @@ export default function App() {
       <Header />
 
       <main className="flex-1">
-        <section className="mx-auto max-w-5xl px-4 pb-10 pt-8 text-center sm:px-6 sm:pt-16">
+        <section className="mx-auto max-w-5xl px-4 pb-6 pt-8 text-center sm:px-6 sm:pb-8 sm:pt-16">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
             Free QR Code Generator
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base text-ink-muted sm:text-lg">
+          <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-ink-muted sm:mt-4 sm:text-lg">
             Create and download QR codes instantly. Your data stays in your
             browser.
           </p>

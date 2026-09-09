@@ -201,7 +201,9 @@ export function validateQrForm(type, data) {
       const first = String(data.firstName ?? '').trim()
       const last = String(data.lastName ?? '').trim()
       if (!first && !last) {
-        errors.firstName = 'Enter at least a first or last name.'
+        const nameError = 'Please enter a first or last name.'
+        errors.firstName = nameError
+        errors.lastName = nameError
       }
       const email = String(data.email ?? '').trim()
       if (email && !isValidEmail(email)) {
@@ -222,6 +224,41 @@ export function validateQrForm(type, data) {
   }
 
   return { valid: Object.keys(errors).length === 0, errors }
+}
+
+/**
+ * Map validation error keys to DOM input ids used in QRFormFields.
+ * Order defines focus priority on failed submit.
+ */
+const FIELD_FOCUS_IDS = {
+  website: { url: 'website-url' },
+  maps: { mapsUrl: 'maps-url' },
+  text: { text: 'plain-text' },
+  email: { email: 'email-address' },
+  phone: { phone: 'phone-number' },
+  sms: { phone: 'sms-phone' },
+  wifi: { ssid: 'wifi-ssid', password: 'wifi-password' },
+  vcard: {
+    firstName: 'vcard-first',
+    lastName: 'vcard-last',
+    phone: 'vcard-phone',
+    email: 'vcard-email',
+    website: 'vcard-website',
+  },
+}
+
+/**
+ * @param {string} type
+ * @param {Record<string, string>} errors
+ * @returns {string | null}
+ */
+export function getFirstInvalidFieldId(type, errors) {
+  const map = FIELD_FOCUS_IDS[type]
+  if (!map) return null
+  for (const key of Object.keys(map)) {
+    if (errors[key]) return map[key]
+  }
+  return null
 }
 
 /**

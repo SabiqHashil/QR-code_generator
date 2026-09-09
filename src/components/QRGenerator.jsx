@@ -7,6 +7,7 @@ import {
   validateQrForm,
   buildQrPayload,
   getPayloadSummary,
+  getFirstInvalidFieldId,
 } from '../utils/qrPayload'
 import {
   QR_SIZE_OPTIONS,
@@ -19,13 +20,14 @@ const selectClass =
   'w-full rounded-xl border border-line bg-panel px-3 py-2.5 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20'
 
 /**
- * QR generator workspace with preview UX controls (size, ECC, Generate New).
- * No persistence, upload, or downloads in this phase.
+ * QR generator workspace with polished validation and preview controls.
+ * No persistence or upload of QR data.
  */
 export default function QRGenerator() {
   const [qrType, setQrType] = useState('website')
   const [formData, setFormData] = useState(() => getEmptyFormData('website'))
   const [errors, setErrors] = useState({})
+  const [formAlert, setFormAlert] = useState(null)
   const [payload, setPayload] = useState(null)
   const [summary, setSummary] = useState(null)
   const [generateError, setGenerateError] = useState(null)
@@ -44,19 +46,36 @@ export default function QRGenerator() {
     setGenerateError(null)
   }
 
+  function focusInvalidField(type, nextErrors) {
+    const fieldId = getFirstInvalidFieldId(type, nextErrors)
+    if (!fieldId) return
+    requestAnimationFrame(() => {
+      const el = document.getElementById(fieldId)
+      if (el && typeof el.focus === 'function') {
+        el.focus()
+      }
+    })
+  }
+
   function handleTypeChange(nextType) {
     setQrType(nextType)
     setFormData(getEmptyFormData(nextType))
     setErrors({})
+    setFormAlert(null)
     clearPreview()
   }
 
   function handleFieldChange(nextValues) {
     setFormData(nextValues)
-    if (Object.keys(errors).length > 0) {
-      const { errors: nextErrors } = validateQrForm(qrType, nextValues)
+
+    if (Object.keys(errors).length > 0 || formAlert) {
+      const { valid, errors: nextErrors } = validateQrForm(qrType, nextValues)
       setErrors(nextErrors)
+      if (valid) {
+        setFormAlert(null)
+      }
     }
+
     if (payload !== null || generateError) {
       clearPreview()
     }
@@ -69,8 +88,12 @@ export default function QRGenerator() {
 
     if (!valid) {
       clearPreview()
+      setFormAlert('Please fix the highlighted fields.')
+      focusInvalidField(qrType, nextErrors)
       return
     }
+
+    setFormAlert(null)
 
     try {
       const nextPayload = buildQrPayload(qrType, formData)
@@ -95,6 +118,7 @@ export default function QRGenerator() {
   function handleReset() {
     setFormData(getEmptyFormData(qrType))
     setErrors({})
+    setFormAlert(null)
     clearPreview()
   }
 
@@ -186,6 +210,16 @@ export default function QRGenerator() {
                   </div>
                 </div>
               </div>
+
+              {formAlert && (
+                <p
+                  className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                  role="alert"
+                  aria-live="polite"
+                >
+                  {formAlert}
+                </p>
+              )}
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button

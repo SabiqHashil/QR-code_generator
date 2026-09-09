@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { renderQrToCanvas, DEFAULT_QR_SIZE, DEFAULT_QR_ECC } from '../utils/qrRender'
 import { downloadCanvasImage, downloadQrPdf, getQrFilename } from '../utils/qrDownload'
+import DownloadMenu from './DownloadMenu'
 
 /**
  * Polished client-side QR preview with metadata, downloads, and Generate New.
@@ -95,6 +96,14 @@ export default function QRPreview({
     }
   }
 
+  function handleDownloadSelect(format) {
+    if (format === 'pdf') {
+      handleDownloadPdf()
+      return
+    }
+    handleDownload(format)
+  }
+
   const showEmpty = !payload && !error
   const showQr = Boolean(payload) && hasImage && !error
   const downloadDisabled = isRendering || !showQr
@@ -168,30 +177,10 @@ export default function QRPreview({
             </div>
 
             <div className="flex flex-col gap-2">
-              <button
-                type="button"
+              <DownloadMenu
                 disabled={downloadDisabled}
-                onClick={() => handleDownload('png')}
-                className="inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Download PNG
-              </button>
-              <button
-                type="button"
-                disabled={downloadDisabled}
-                onClick={() => handleDownload('jpg')}
-                className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/20 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Download JPG
-              </button>
-              <button
-                type="button"
-                disabled={downloadDisabled}
-                onClick={handleDownloadPdf}
-                className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/20 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Download PDF
-              </button>
+                onSelect={handleDownloadSelect}
+              />
               {onGenerateNew && (
                 <button
                   type="button"

@@ -318,8 +318,13 @@ export default function QRFormFields({ type, values, errors = {}, onChange }) {
                 autoComplete="family-name"
                 value={values.lastName ?? ''}
                 onChange={(e) => setField('lastName', e.target.value)}
-                className={inputClass}
+                aria-invalid={Boolean(errors.lastName)}
+                aria-describedby={
+                  errors.lastName ? 'vcard-last-error' : undefined
+                }
+                className={`${inputClass} ${errors.lastName ? inputErrorClass : ''}`}
               />
+              <FieldError id="vcard-last-error" message={errors.lastName} />
             </div>
           </div>
           <div className="space-y-2">

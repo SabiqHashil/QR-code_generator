@@ -146,7 +146,7 @@ export default function DownloadMenu({ disabled = false, onSelect }) {
           role="menu"
           aria-label="Download formats"
           onKeyDown={handleMenuKeyDown}
-          className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-line bg-panel py-1 shadow-lg shadow-slate-900/10"
+          className="absolute bottom-full z-30 mb-2 w-full overflow-hidden rounded-xl border border-line bg-panel py-1 shadow-lg shadow-slate-900/10"
         >
           {MENU_ITEMS.map((item, index) => (
             <li key={item.id} role="none">

@@ -7,15 +7,9 @@ export const QR_SIZE_OPTIONS = [
   { id: 360, label: 'Large' },
 ]
 
-/** Error correction levels supported by qrcode. */
-export const QR_ECC_OPTIONS = [
-  { id: 'L', label: 'Low (L)' },
-  { id: 'M', label: 'Medium (M)' },
-  { id: 'Q', label: 'Quartile (Q)' },
-  { id: 'H', label: 'High (H)' },
-]
-
 export const DEFAULT_QR_SIZE = 280
+
+/** Fixed high error correction for reliable scanning. */
 export const DEFAULT_QR_ECC = 'H'
 
 /** Default client-side QR render options (scannable, high ECC). */
@@ -47,6 +41,7 @@ export async function renderQrToCanvas(canvas, payload, overrides = {}) {
   await QRCode.toCanvas(canvas, payload, {
     ...QR_RENDER_DEFAULTS,
     ...overrides,
+    errorCorrectionLevel: DEFAULT_QR_ECC,
     color: {
       ...QR_RENDER_DEFAULTS.color,
       ...(overrides.color ?? {}),

@@ -11,9 +11,7 @@ import {
 } from '../utils/qrPayload'
 import {
   QR_SIZE_OPTIONS,
-  QR_ECC_OPTIONS,
   DEFAULT_QR_SIZE,
-  DEFAULT_QR_ECC,
 } from '../utils/qrRender'
 
 const selectClass =
@@ -32,7 +30,6 @@ export default function QRGenerator() {
   const [summary, setSummary] = useState(null)
   const [generateError, setGenerateError] = useState(null)
   const [qrSize, setQrSize] = useState(DEFAULT_QR_SIZE)
-  const [errorCorrection, setErrorCorrection] = useState(DEFAULT_QR_ECC)
 
   const handleRenderError = useCallback((message) => {
     setGenerateError(message || 'Failed to generate QR code.')
@@ -168,46 +165,23 @@ export default function QRGenerator() {
 
               <div className="space-y-4 rounded-xl border border-line bg-surface/50 p-4 sm:p-5">
                 <p className="text-sm font-semibold text-ink">QR options</p>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <label htmlFor="qr-size" className="block text-sm font-medium text-ink">
-                      Size
-                    </label>
-                    <select
-                      id="qr-size"
-                      name="qr-size"
-                      value={qrSize}
-                      onChange={(e) => setQrSize(Number(e.target.value))}
-                      className={selectClass}
-                    >
-                      {QR_SIZE_OPTIONS.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="qr-ecc"
-                      className="block text-sm font-medium text-ink"
-                    >
-                      Error correction
-                    </label>
-                    <select
-                      id="qr-ecc"
-                      name="qr-ecc"
-                      value={errorCorrection}
-                      onChange={(e) => setErrorCorrection(e.target.value)}
-                      className={selectClass}
-                    >
-                      {QR_ECC_OPTIONS.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="space-y-2">
+                  <label htmlFor="qr-size" className="block text-sm font-medium text-ink">
+                    Size
+                  </label>
+                  <select
+                    id="qr-size"
+                    name="qr-size"
+                    value={qrSize}
+                    onChange={(e) => setQrSize(Number(e.target.value))}
+                    className={selectClass}
+                  >
+                    {QR_SIZE_OPTIONS.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -246,7 +220,6 @@ export default function QRGenerator() {
               error={generateError}
               qrType={qrType}
               size={qrSize}
-              errorCorrection={errorCorrection}
               onRenderError={handleRenderError}
               onGenerateNew={handleGenerateNew}
             />

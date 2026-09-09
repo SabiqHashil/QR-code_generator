@@ -1,9 +1,15 @@
 import { jsPDF } from 'jspdf'
+import { renderQrToCanvas } from './qrRender.js'
 
 /**
  * Client-side QR image/PDF download helpers.
  * Uses browser download only — no upload or persistence.
  */
+
+/** Offscreen export size for sharp HD downloads with small B/W file size. */
+export const DOWNLOAD_QR_SIZE = 1024
+
+const JPG_QUALITY = 0.85
 
 const TYPE_FILENAME_SLUG = {
   website: 'website',
@@ -43,25 +49,32 @@ function triggerDownload(dataUrl, filename) {
 }
 
 /**
- * @param {HTMLCanvasElement} canvas
+ * Render a fresh high-resolution QR onto an offscreen canvas.
+ * @param {string} payload
+ * @returns {Promise<HTMLCanvasElement>}
  */
-function assertCanvas(canvas) {
-  if (!canvas || typeof canvas.toDataURL !== 'function') {
-    throw new Error('QR canvas is not available.')
+async function renderDownloadCanvas(payload) {
+  if (!payload) {
+    throw new Error('QR payload is empty.')
   }
+
+  const canvas = document.createElement('canvas')
+  await renderQrToCanvas(canvas, payload, { width: DOWNLOAD_QR_SIZE })
+
   if (!canvas.width || !canvas.height) {
     throw new Error('QR canvas is empty.')
   }
+
+  return canvas
 }
 
 /**
- * Export the current canvas pixels as PNG or JPG and download locally.
- * @param {HTMLCanvasElement} canvas
+ * Export a high-resolution PNG or JPG from the QR payload and download locally.
+ * @param {string} payload
  * @param {{ format: 'png' | 'jpg', filename: string }} options
  */
-export function downloadCanvasImage(canvas, { format, filename }) {
-  assertCanvas(canvas)
-
+export async function downloadQrImage(payload, { format, filename }) {
+  const canvas = await renderDownloadCanvas(payload)
   let dataUrl
 
   if (format === 'png') {
@@ -77,7 +90,7 @@ export function downloadCanvasImage(canvas, { format, filename }) {
     ctx.fillStyle = '#FFFFFF'
     ctx.fillRect(0, 0, temp.width, temp.height)
     ctx.drawImage(canvas, 0, 0)
-    dataUrl = temp.toDataURL('image/jpeg', 0.92)
+    dataUrl = temp.toDataURL('image/jpeg', JPG_QUALITY)
   } else {
     throw new Error('Unsupported image format.')
   }
@@ -86,13 +99,12 @@ export function downloadCanvasImage(canvas, { format, filename }) {
 }
 
 /**
- * Build a simple A4 PDF with the QR image and metadata, then download locally.
- * @param {HTMLCanvasElement} canvas
+ * Build a simple A4 PDF with a high-res QR image and metadata, then download locally.
+ * @param {string} payload
  * @param {{ filename: string, typeLabel?: string, detail?: string }} options
  */
-export function downloadQrPdf(canvas, { filename, typeLabel = '', detail = '' }) {
-  assertCanvas(canvas)
-
+export async function downloadQrPdf(payload, { filename, typeLabel = '', detail = '' }) {
+  const canvas = await renderDownloadCanvas(payload)
   const imageData = canvas.toDataURL('image/png')
   const pdf = new jsPDF({
     orientation: 'portrait',

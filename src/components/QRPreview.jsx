@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { renderQrToCanvas, DEFAULT_QR_SIZE, DEFAULT_QR_ECC } from '../utils/qrRender'
-import { downloadCanvasImage, downloadQrPdf, getQrFilename } from '../utils/qrDownload'
+import { renderQrToCanvas, DEFAULT_QR_SIZE } from '../utils/qrRender'
+import { downloadQrImage, downloadQrPdf, getQrFilename } from '../utils/qrDownload'
 import DownloadMenu from './DownloadMenu'
 
 /**
@@ -12,7 +12,6 @@ export default function QRPreview({
   error = null,
   qrType = 'website',
   size = DEFAULT_QR_SIZE,
-  errorCorrection = DEFAULT_QR_ECC,
   onRenderError,
   onGenerateNew,
 }) {
@@ -20,6 +19,7 @@ export default function QRPreview({
   const [isRendering, setIsRendering] = useState(false)
   const [hasImage, setHasImage] = useState(false)
   const [downloadError, setDownloadError] = useState(null)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -42,7 +42,6 @@ export default function QRPreview({
       try {
         await renderQrToCanvas(canvas, payload, {
           width: size,
-          errorCorrectionLevel: errorCorrection,
         })
         if (!cancelled) {
           setHasImage(true)
@@ -64,49 +63,40 @@ export default function QRPreview({
     return () => {
       cancelled = true
     }
-  }, [payload, size, errorCorrection, onRenderError])
+  }, [payload, size, onRenderError])
 
-  function handleDownload(format) {
+  async function handleDownloadSelect(format) {
+    if (!payload || isDownloading) return
+
     setDownloadError(null)
+    setIsDownloading(true)
     try {
-      const canvas = canvasRef.current
       const filename = getQrFilename(qrType, format)
-      downloadCanvasImage(canvas, { format, filename })
+      if (format === 'pdf') {
+        await downloadQrPdf(payload, {
+          filename,
+          typeLabel: summary?.typeLabel ?? '',
+          detail: summary?.detail ?? '',
+        })
+      } else {
+        await downloadQrImage(payload, { format, filename })
+      }
     } catch (err) {
       setDownloadError(
-        err instanceof Error ? err.message : 'Failed to download QR image.',
+        err instanceof Error
+          ? err.message
+          : format === 'pdf'
+            ? 'Failed to download PDF.'
+            : 'Failed to download QR image.',
       )
+    } finally {
+      setIsDownloading(false)
     }
-  }
-
-  function handleDownloadPdf() {
-    setDownloadError(null)
-    try {
-      const canvas = canvasRef.current
-      const filename = getQrFilename(qrType, 'pdf')
-      downloadQrPdf(canvas, {
-        filename,
-        typeLabel: summary?.typeLabel ?? '',
-        detail: summary?.detail ?? '',
-      })
-    } catch (err) {
-      setDownloadError(
-        err instanceof Error ? err.message : 'Failed to download PDF.',
-      )
-    }
-  }
-
-  function handleDownloadSelect(format) {
-    if (format === 'pdf') {
-      handleDownloadPdf()
-      return
-    }
-    handleDownload(format)
   }
 
   const showEmpty = !payload && !error && !isRendering
   const showQr = Boolean(payload) && hasImage && !error
-  const downloadDisabled = isRendering || !showQr
+  const downloadDisabled = isRendering || !showQr || isDownloading || !payload
 
   return (
     <div className="flex h-full min-h-[260px] flex-col">
@@ -182,7 +172,7 @@ export default function QRPreview({
         )}
 
         {showQr && summary && (
-          <div className="mt-6 w-full max-w-sm space-y-5 transition-opacity duration-300">
+          <div className="relative z-10 mt-6 w-full max-w-sm space-y-5 overflow-visible transition-opacity duration-300">
             <div className="space-y-1.5">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent">
                 {summary.typeLabel}
@@ -194,7 +184,7 @@ export default function QRPreview({
               ) : null}
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 overflow-visible">
               <DownloadMenu
                 disabled={downloadDisabled}
                 onSelect={handleDownloadSelect}

@@ -1,4 +1,3 @@
-import { jsPDF } from 'jspdf'
 import { renderQrToCanvas } from './qrRender.js'
 
 /**
@@ -106,6 +105,7 @@ export async function downloadQrImage(payload, { format, filename }) {
 export async function downloadQrPdf(payload, { filename, typeLabel = '', detail = '' }) {
   const canvas = await renderDownloadCanvas(payload)
   const imageData = canvas.toDataURL('image/png')
+  const { jsPDF } = await import('jspdf')
   const pdf = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',

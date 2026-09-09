@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { renderQrToCanvas, DEFAULT_QR_SIZE, DEFAULT_QR_ECC } from '../utils/qrRender'
-import { downloadCanvasImage, getQrFilename } from '../utils/qrDownload'
+import { downloadCanvasImage, downloadQrPdf, getQrFilename } from '../utils/qrDownload'
 
 /**
  * Polished client-side QR preview with metadata, downloads, and Generate New.
@@ -74,6 +74,23 @@ export default function QRPreview({
     } catch (err) {
       setDownloadError(
         err instanceof Error ? err.message : 'Failed to download QR image.',
+      )
+    }
+  }
+
+  function handleDownloadPdf() {
+    setDownloadError(null)
+    try {
+      const canvas = canvasRef.current
+      const filename = getQrFilename(qrType, 'pdf')
+      downloadQrPdf(canvas, {
+        filename,
+        typeLabel: summary?.typeLabel ?? '',
+        detail: summary?.detail ?? '',
+      })
+    } catch (err) {
+      setDownloadError(
+        err instanceof Error ? err.message : 'Failed to download PDF.',
       )
     }
   }
@@ -166,6 +183,14 @@ export default function QRPreview({
                 className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/20 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Download JPG
+              </button>
+              <button
+                type="button"
+                disabled={downloadDisabled}
+                onClick={handleDownloadPdf}
+                className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/20 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Download PDF
               </button>
               {onGenerateNew && (
                 <button

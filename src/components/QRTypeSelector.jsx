@@ -1,7 +1,7 @@
 import { QR_TYPES } from '../utils/qrPayload'
 
 /**
- * Phase 1 placeholder: Website selected; other types listed but inactive.
+ * Select among supported QR content types.
  */
 export default function QRTypeSelector({ value = 'website', onChange }) {
   return (
@@ -17,13 +17,8 @@ export default function QRTypeSelector({ value = 'website', onChange }) {
         className="w-full rounded-xl border border-line bg-panel px-3 py-2.5 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
       >
         {QR_TYPES.map((type) => (
-          <option
-            key={type.id}
-            value={type.id}
-            disabled={type.id !== 'website'}
-          >
+          <option key={type.id} value={type.id}>
             {type.label}
-            {type.id !== 'website' ? ' (soon)' : ''}
           </option>
         ))}
       </select>

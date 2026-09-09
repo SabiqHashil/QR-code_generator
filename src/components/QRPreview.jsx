@@ -114,19 +114,20 @@ export default function QRPreview({
         Preview
       </h2>
 
-      <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-line bg-surface/80 px-4 py-8 text-center sm:px-6">
-        <canvas
-          ref={canvasRef}
-          className={`mx-auto h-auto max-w-full rounded-lg bg-white shadow-sm ${
-            showQr ? 'block' : 'hidden'
-          }`}
-          aria-label={
-            summary
-              ? `QR code for ${summary.typeLabel}`
-              : 'Generated QR code'
-          }
-        />
-
+      <div className="flex flex-1 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-line bg-surface/80 px-4 py-8 text-center sm:px-6">
+        <div className="w-full max-w-full overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            className={`mx-auto h-auto max-w-full rounded-lg bg-white shadow-sm ${
+              showQr ? 'block' : 'hidden'
+            }`}
+            aria-label={
+              summary
+                ? `QR code for ${summary.typeLabel}`
+                : 'Generated QR code'
+            }
+          />
+        </div>
         {isRendering && (
           <p className="text-sm text-ink-muted" role="status">
             Generating QR code…
@@ -185,7 +186,7 @@ export default function QRPreview({
                 <button
                   type="button"
                   onClick={onGenerateNew}
-                  className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   Generate New QR
                 </button>

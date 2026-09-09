@@ -1,7 +1,7 @@
 import { WIFI_SECURITY } from '../utils/qrPayload'
 
 const inputClass =
-  'w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink placeholder:text-slate-400 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20'
+  'min-h-11 w-full rounded-xl border border-line bg-surface px-3 py-3 text-sm text-ink placeholder:text-slate-400 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20'
 const inputErrorClass = 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
 const labelClass = 'block text-sm font-medium text-ink'
 const errorClass = 'text-xs text-red-600'
@@ -271,13 +271,13 @@ export default function QRFormFields({ type, values, errors = {}, onChange }) {
               <FieldError id="wifi-password-error" message={errors.password} />
             </div>
           )}
-          <label className="flex items-center gap-2 text-sm text-ink">
+          <label className="flex min-h-11 items-center gap-3 text-sm text-ink">
             <input
               type="checkbox"
               name="hidden"
               checked={Boolean(values.hidden)}
               onChange={(e) => setField('hidden', e.target.checked)}
-              className="size-4 rounded border-line text-accent focus:ring-accent/30"
+              className="size-4 rounded border-line text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent focus:ring-accent/30"
             />
             Hidden Network
           </label>

@@ -17,7 +17,7 @@ import {
 } from '../utils/qrRender'
 
 const selectClass =
-  'w-full rounded-xl border border-line bg-panel px-3 py-2.5 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20'
+  'min-h-11 w-full rounded-xl border border-line bg-panel px-3 py-3 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20'
 
 /**
  * QR generator workspace with polished validation and preview controls.
@@ -148,7 +148,7 @@ export default function QRGenerator() {
 
       <div className="overflow-hidden rounded-2xl border border-line bg-panel shadow-sm shadow-slate-900/5">
         <div className="grid lg:grid-cols-2">
-          <div className="border-b border-line p-5 sm:p-6 lg:border-b-0 lg:border-r">
+          <div className="min-w-0 border-b border-line p-5 sm:p-6 lg:border-b-0 lg:border-r">
             <h3 className="mb-5 text-sm font-semibold uppercase tracking-wide text-ink-muted">
               Configuration
             </h3>
@@ -224,14 +224,14 @@ export default function QRGenerator() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[10rem]"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[10rem]"
                 >
                   Generate QR
                 </button>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-3 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[8rem]"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-3 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto sm:min-w-[8rem]"
                 >
                   Reset
                 </button>
@@ -239,7 +239,7 @@ export default function QRGenerator() {
             </form>
           </div>
 
-          <div className="bg-surface/40 p-5 sm:p-6">
+          <div className="min-w-0 bg-surface/40 p-5 sm:p-6">
             <QRPreview
               payload={payload}
               summary={summary}

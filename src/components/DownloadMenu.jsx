@@ -132,7 +132,7 @@ export default function DownloadMenu({ disabled = false, onSelect }) {
         aria-controls={menuId}
         onClick={toggleMenu}
         onKeyDown={handleTriggerKeyDown}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
       >
         Download
         <span aria-hidden="true" className="text-xs opacity-90">
@@ -158,7 +158,7 @@ export default function DownloadMenu({ disabled = false, onSelect }) {
                 role="menuitem"
                 tabIndex={index === activeIndex ? 0 : -1}
                 onClick={() => selectItem(item.id)}
-                className="block w-full px-4 py-2.5 text-left text-sm font-medium text-ink transition hover:bg-surface focus:bg-surface focus:outline-none"
+                className="block min-h-11 w-full px-4 py-2.5 text-left text-sm font-medium text-ink transition hover:bg-surface focus:bg-surface focus:outline-none focus-visible:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent"
               >
                 {item.label}
               </button>

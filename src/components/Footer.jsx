@@ -8,7 +8,7 @@ export default function Footer() {
             href="https://sabiqhashil.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-ink-muted underline-offset-2 transition hover:text-ink hover:underline"
+            className="rounded-sm text-ink-muted underline-offset-2 transition hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             Sabiq Hashil
           </a>

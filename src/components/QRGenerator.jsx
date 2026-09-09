@@ -210,6 +210,7 @@ export default function QRGenerator() {
               payload={payload}
               summary={summary}
               error={generateError}
+              qrType={qrType}
               size={qrSize}
               errorCorrection={errorCorrection}
               onRenderError={handleRenderError}

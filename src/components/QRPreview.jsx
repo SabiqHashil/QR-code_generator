@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { renderQrToCanvas, DEFAULT_QR_SIZE, DEFAULT_QR_ECC } from '../utils/qrRender'
+import { downloadCanvasImage, getQrFilename } from '../utils/qrDownload'
 
 /**
- * Polished client-side QR preview with metadata and Generate New.
+ * Polished client-side QR preview with metadata, downloads, and Generate New.
  */
 export default function QRPreview({
   payload = null,
   summary = null,
   error = null,
+  qrType = 'website',
   size = DEFAULT_QR_SIZE,
   errorCorrection = DEFAULT_QR_ECC,
   onRenderError,
@@ -16,12 +18,15 @@ export default function QRPreview({
   const canvasRef = useRef(null)
   const [isRendering, setIsRendering] = useState(false)
   const [hasImage, setHasImage] = useState(false)
+  const [downloadError, setDownloadError] = useState(null)
 
   useEffect(() => {
     let cancelled = false
 
     async function draw() {
       const canvas = canvasRef.current
+      setDownloadError(null)
+
       if (!payload || !canvas) {
         setHasImage(false)
         setIsRendering(false)
@@ -60,8 +65,22 @@ export default function QRPreview({
     }
   }, [payload, size, errorCorrection, onRenderError])
 
+  function handleDownload(format) {
+    setDownloadError(null)
+    try {
+      const canvas = canvasRef.current
+      const filename = getQrFilename(qrType, format)
+      downloadCanvasImage(canvas, { format, filename })
+    } catch (err) {
+      setDownloadError(
+        err instanceof Error ? err.message : 'Failed to download QR image.',
+      )
+    }
+  }
+
   const showEmpty = !payload && !error
   const showQr = Boolean(payload) && hasImage && !error
+  const downloadDisabled = isRendering || !showQr
 
   return (
     <div className="flex h-full min-h-[240px] flex-col">
@@ -131,14 +150,38 @@ export default function QRPreview({
               ) : null}
             </div>
 
-            {onGenerateNew && (
+            <div className="flex flex-col gap-2">
               <button
                 type="button"
-                onClick={onGenerateNew}
-                className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/20 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                disabled={downloadDisabled}
+                onClick={() => handleDownload('png')}
+                className="inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Generate New QR
+                Download PNG
               </button>
+              <button
+                type="button"
+                disabled={downloadDisabled}
+                onClick={() => handleDownload('jpg')}
+                className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-ink/20 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Download JPG
+              </button>
+              {onGenerateNew && (
+                <button
+                  type="button"
+                  onClick={onGenerateNew}
+                  className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-panel px-4 py-2.5 text-sm font-semibold text-ink-muted transition hover:border-ink/20 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  Generate New QR
+                </button>
+              )}
+            </div>
+
+            {downloadError && (
+              <p className="text-xs text-red-600" role="alert">
+                {downloadError}
+              </p>
             )}
           </div>
         )}
